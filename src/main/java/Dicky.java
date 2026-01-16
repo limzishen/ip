@@ -25,15 +25,16 @@ public class Dicky {
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.printf("%d: %s%n", i + 1, tasks.get(i));
                     }
+                    System.out.println(line);
                 }
             }
-
-            if (action.equalsIgnoreCase("exit")) {
+            else if (action.equalsIgnoreCase("exit")) {
                 break; // Exit the loop if the user types 'exit'
             }
-
-            tasks.add(action);
-            System.out.println(line + "\n" + action + "\n" + line);
+            else{
+                tasks.add(action);
+                System.out.println(line + "\n" + "added: " + action + "\n" + line);
+            }
         }
 
         // Exit
