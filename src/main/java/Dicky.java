@@ -1,9 +1,12 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dicky {
+
     public static void main(String[] args) {
         String line = "------------------------------";
         Scanner scanner = new Scanner(System.in);
+        ArrayList<String> tasks = new ArrayList<>();
 
         //greet
         String welcomeMessage = "Hello I'm Dicky.";
@@ -15,12 +18,23 @@ public class Dicky {
         while (scanner.hasNextLine()) {
             String action = scanner.nextLine();
 
-            if (action.equalsIgnoreCase("pineapple")) {
+            if (action.equals("list")) {
+                if (tasks.isEmpty()) {
+                    System.out.println("No items in list");
+                } else {
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.printf("%d: %s%n", i + 1, tasks.get(i));
+                    }
+                }
+            }
+
+            if (action.equalsIgnoreCase("exit")) {
                 break; // Exit the loop if the user types 'exit'
             }
+
+            tasks.add(action);
             System.out.println(line + "\n" + action + "\n" + line);
         }
-
 
         // Exit
         System.out.println(line);
