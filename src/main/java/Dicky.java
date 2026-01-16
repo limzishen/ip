@@ -6,7 +6,7 @@ public class Dicky {
     public static void main(String[] args) {
         String line = "------------------------------";
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>(); // [task, status]
 
         //greet
         String welcomeMessage = "Hello I'm Dicky.";
@@ -17,6 +17,7 @@ public class Dicky {
         // Scan for input
         while (scanner.hasNextLine()) {
             String action = scanner.nextLine();
+            String[] input = action.split("\\s+");
 
             if (action.equals("list")) {
                 if (tasks.isEmpty()) {
@@ -27,12 +28,25 @@ public class Dicky {
                     }
                     System.out.println(line);
                 }
-            }
-            else if (action.equalsIgnoreCase("exit")) {
+            } else if (input[0].equals("mark")){
+                int index = Integer.parseInt(input[1]) - 1;
+                tasks.get(index).status = true;
+
+                System.out.println("Nice! I've marked this task as done:");
+                System.out.println(tasks.get(index));
+
+            } else if (input[0].equals("unmark")) {
+                int index = Integer.parseInt(input[1]) - 1;
+                tasks.get(index).status = false;
+
+                System.out.println("OK, I've marked this task as not done yet:");
+                System.out.println(tasks.get(index));
+            } else if (action.equalsIgnoreCase("exit")) {
                 break; // Exit the loop if the user types 'exit'
             }
             else{
-                tasks.add(action);
+                Task newTask = new Task(action);
+                tasks.add(newTask);
                 System.out.println(line + "\n" + "added: " + action + "\n" + line);
             }
         }
