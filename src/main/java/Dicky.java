@@ -56,6 +56,7 @@ public class Dicky {
                         break;
                     case "event":
                         newTask = new Event(input[1], input[2], input[3]);
+                        break;
                     default:
                         newTask = new Task("invalid task");
                 }
