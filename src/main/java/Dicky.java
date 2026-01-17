@@ -1,6 +1,9 @@
+import java.nio.file.FileSystemNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import exception.InvalidActionException;
+import exception.MissingTaskException;
 
 public class Dicky {
 
@@ -17,55 +20,62 @@ public class Dicky {
 
         // Scan for input
         while (scanner.hasNextLine()) {
-            String action = scanner.nextLine().strip();
-            String[] input = action.split("\\s+");
+            try {
+                String action = scanner.nextLine().strip();
+                String[] input = action.split("\\s+");
 
-            if (action.equals("list")) {
-                if (tasks.isEmpty()) {
-                    System.out.println("No items in list");
-                } else {
-                    for (int i = 0; i < tasks.size(); i++) {
-                        System.out.printf("%d: %s%n", i + 1, tasks.get(i));
+                if (action.equals("list")) {
+                    if (tasks.isEmpty()) {
+                        System.out.println("No items in list");
+                    } else {
+                        for (int i = 0; i < tasks.size(); i++) {
+                            System.out.printf("%d: %s%n", i + 1, tasks.get(i));
+                        }
+                        System.out.println(line);
                     }
+                } else if (input[0].equals("mark")){
+                    int index = Integer.parseInt(input[1]) - 1;
+                    tasks.get(index).status = true;
+
+                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println(tasks.get(index));
+
+                } else if (input[0].equals("unmark")) {
+                    int index = Integer.parseInt(input[1]) - 1;
+                    tasks.get(index).status = false;
+                    System.out.println("OK, I've marked this task as not done yet:");
+                    System.out.println(tasks.get(index));
+                } else if (action.equalsIgnoreCase("exit")) {
+                    break; // Exit the loop if the user types 'exit'
+                } else{
+                    if (input.length < 2) {
+                        throw new InvalidActionException("Invalid Action");
+                    }
+                    Task newTask = switch (input[0].toLowerCase()) {
+                        case "todo" -> {
+                            String[] slice = Arrays.copyOfRange(input, 1, input.length);
+                            if (slice.length <= 0) {
+                                throw new MissingTaskException("No todo task");
+                            }
+                            yield new Task(String.join(" ", slice));
+                        }
+                        case "deadline" -> new Deadlines(input[1], input[2]);
+                        case "event" -> new Event(input[1], input[2], input[3]);
+                        default -> new Task("invalid task");
+                    };
+                    tasks.add(newTask);
+                    System.out.println(line);
+                    System.out.println(newTask.taskAddedMessage(tasks.size()));
                     System.out.println(line);
                 }
-            } else if (input[0].equals("mark")){
-                int index = Integer.parseInt(input[1]) - 1;
-                tasks.get(index).status = true;
-
-                System.out.println("Nice! I've marked this task as done:");
-                System.out.println(tasks.get(index));
-
-            } else if (input[0].equals("unmark")) {
-                int index = Integer.parseInt(input[1]) - 1;
-                tasks.get(index).status = false;
-
-                System.out.println("OK, I've marked this task as not done yet:");
-                System.out.println(tasks.get(index));
-            } else if (action.equalsIgnoreCase("exit")) {
-                break; // Exit the loop if the user types 'exit'
-            } else{
-                Task newTask = null;
-                switch (input[0].toLowerCase()) {
-                    case "todo":
-                        String[] slice = Arrays.copyOfRange(input, 1, input.length);
-                        newTask = new Task(String.join(" ", slice));
-                        break;
-                    case "deadline":
-                        newTask = new Deadlines(input[1], input[2]);
-                        break;
-                    case "event":
-                        newTask = new Event(input[1], input[2], input[3]);
-                        break;
-                    default:
-                        newTask = new Task("invalid task");
-                }
-                tasks.add(newTask);
+            } catch (InvalidActionException e) {
                 System.out.println(line);
-                System.out.println(newTask.taskAddedMessage(tasks.size()));
+                System.out.printf("Error: %s%n\n", e.getMessage());
+            } catch (MissingTaskException e) {
                 System.out.println(line);
-
+                System.out.printf("Error: %s%n\n", e.getMessage());
             }
+
         }
 
         // Exit
