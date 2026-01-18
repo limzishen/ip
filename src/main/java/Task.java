@@ -1,10 +1,12 @@
 public class Task {
     public Boolean status;
     public String taskName;
+    public Boolean deletedStatus;
 
     public Task(String taskName, boolean status) {
         this.taskName = taskName;
         this.status = status;
+        this.deletedStatus = false;
     }
 
     public Task(String taskName) {

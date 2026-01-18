@@ -10,7 +10,7 @@ public class Dicky {
     public static void main(String[] args) {
         String line = "------------------------------";
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>(); // [task, status]
+        ArrayList<Task> tasks = new ArrayList<>();
 
         //greet
         String welcomeMessage = "Hello I'm Dicky.";
@@ -20,62 +20,78 @@ public class Dicky {
 
         // Scan for input
         while (scanner.hasNextLine()) {
+            System.out.println(line);
             try {
                 String action = scanner.nextLine().strip();
+                if (action.isEmpty()) continue;
+
                 String[] input = action.split("\\s+");
+                Command cmd = Command.fromString(input[0]);
+                int index;
 
-                if (action.equals("list")) {
-                    if (tasks.isEmpty()) {
-                        System.out.println("No items in list");
-                    } else {
-                        for (int i = 0; i < tasks.size(); i++) {
-                            System.out.printf("%d: %s%n", i + 1, tasks.get(i));
-                        }
-                        System.out.println(line);
-                    }
-                } else if (input[0].equals("mark")){
-                    int index = Integer.parseInt(input[1]) - 1;
-                    tasks.get(index).status = true;
-
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println(tasks.get(index));
-
-                } else if (input[0].equals("unmark")) {
-                    int index = Integer.parseInt(input[1]) - 1;
-                    tasks.get(index).status = false;
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println(tasks.get(index));
-                } else if (action.equalsIgnoreCase("exit")) {
-                    break; // Exit the loop if the user types 'exit'
-                } else{
-                    if (input.length < 2) {
-                        throw new InvalidActionException("Invalid Action");
-                    }
-                    Task newTask = switch (input[0].toLowerCase()) {
-                        case "todo" -> {
-                            String[] slice = Arrays.copyOfRange(input, 1, input.length);
-                            if (slice.length <= 0) {
-                                throw new MissingTaskException("No todo task");
+                switch (cmd) {
+                    case LIST:
+                        if (tasks.isEmpty()) {
+                            System.out.println("No items in list");
+                        } else {
+                            for (int i = 0; i < tasks.size(); i++) {
+                                System.out.printf("%d: %s%n", i + 1, tasks.get(i));
                             }
-                            yield new Task(String.join(" ", slice));
                         }
-                        case "deadline" -> new Deadlines(input[1], input[2]);
-                        case "event" -> new Event(input[1], input[2], input[3]);
-                        default -> new Task("invalid task");
-                    };
-                    tasks.add(newTask);
-                    System.out.println(line);
-                    System.out.println(newTask.taskAddedMessage(tasks.size()));
-                    System.out.println(line);
-                }
-            } catch (InvalidActionException e) {
-                System.out.println(line);
-                System.out.printf("Error: %s%n\n", e.getMessage());
-            } catch (MissingTaskException e) {
-                System.out.println(line);
-                System.out.printf("Error: %s%n\n", e.getMessage());
-            }
+                        break;
 
+                    case MARK:
+                    case UNMARK:
+                        index = Integer.parseInt(input[1]) - 1;
+                        boolean isDone = (cmd == Command.MARK);
+                        tasks.get(index).status = isDone;
+
+                        System.out.println(isDone ? "Nice! I've marked this task as done:"
+                                : "OK, I've marked this task as not done yet:");
+                        System.out.println(tasks.get(index));
+                        break;
+                    case DELETE:
+                        Task task = tasks.get(Integer.parseInt(input[1]) - 1);
+                        index = Integer.parseInt(input[1]) - 1;
+                        tasks.remove(index);
+                        System.out.printf("Task removed: %s \n", task.toString());
+                        break;
+                    case EXIT:
+                        return; // or break the loop
+
+                    case TODO:
+                    case DEADLINE:
+                    case EVENT:
+                        if (input.length < 2) throw new MissingTaskException("No task");
+                        String splice = String.join(" ", Arrays.copyOfRange(input, 1, input.length));
+                        Task newTask = switch (cmd) {
+                            case TODO -> new Task(splice);
+                            case DEADLINE -> {
+                                String[] deadlinesPart = splice.split(" /by ");
+                                if (deadlinesPart.length < 2) throw new InvalidActionException("missing deadline");
+                                yield new Deadlines(deadlinesPart[0], deadlinesPart[1]);
+                            }
+                            case EVENT -> {
+                                String[] eventParts = splice.split(" /from | /to ");
+                                if (eventParts.length < 3) throw new InvalidActionException("missing start/end time");
+                                yield new Event(eventParts[0], eventParts[1], eventParts[0]);
+                            }
+                            default -> throw new InvalidActionException("Unexpected error");
+                        };
+                        tasks.add(newTask);
+                        System.out.println(newTask.taskAddedMessage(tasks.size()));
+                        break;
+
+                    case UNKNOWN:
+                    default:
+                        throw new InvalidActionException("Invalid Action: " + input[0]);
+                }
+            } catch (InvalidActionException | MissingTaskException e) {
+                System.out.printf("Error: %s%n\n", e.getMessage());
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                System.out.println("Error: Please provide a valid task number.");
+            }
+            System.out.println(line);
         }
 
         // Exit

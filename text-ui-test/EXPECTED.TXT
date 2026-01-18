@@ -8,14 +8,50 @@ Got it. I've added this task:
 ------------------------------
 ------------------------------
 Got it. I've added this task: 
- [E] [ ] submit_assignment Datetime: tomorrow
+ [D] [ ] study Datetime: 8pm
  Now you have 2 tasks in the list.
 ------------------------------
+------------------------------
+Got it. I've added this task: 
+ [E] [ ] lunch Start Time: 12 End Time: lunch
+ Now you have 3 tasks in the list.
+------------------------------
+------------------------------
 1: [T] [ ] read book
-2: [E] [ ] submit_assignment Datetime: tomorrow
+2: [D] [ ] study Datetime: 8pm
+3: [E] [ ] lunch Start Time: 12 End Time: lunch
+------------------------------
 ------------------------------
 Nice! I've marked this task as done:
 [T] [X] read book
+------------------------------
+------------------------------
+OK, I've marked this task as not done yet:
+[D] [ ] study Datetime: 8pm
+------------------------------
+------------------------------
+Task removed: [T] [X] read book 
+------------------------------
+------------------------------
+Error:  ☹ OOPS!!! No task
+
+------------------------------
+------------------------------
+Error:  ☹ OOPS!!! No task
+
+------------------------------
+------------------------------
+Error:  ☹ OOPS!!! No task
+
+------------------------------
+------------------------------
+Error:  ☹ OOPS!!! missing deadline
+
+------------------------------
+------------------------------
+Error:  ☹ OOPS!!! missing start/end time
+
+------------------------------
 ------------------------------
 Bye. Hope to see you again soon!
 ------------------------------

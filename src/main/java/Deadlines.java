@@ -8,7 +8,7 @@ public class Deadlines extends Task{
     @Override
     public String toString() {
         String statusIcon = status ? "X" : " "; // X if true, space if false
-        return String.format("[E] [%s] %s Datetime: %s",
+        return String.format("[D] [%s] %s Datetime: %s",
                 statusIcon, taskName, deadline);
     }
 }
