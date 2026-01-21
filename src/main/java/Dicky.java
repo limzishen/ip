@@ -5,12 +5,95 @@ import java.util.Scanner;
 import exception.InvalidActionException;
 import exception.MissingTaskException;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+
 public class Dicky {
+    /**
+     * Reads and prints the content of the file.
+     * @param file The file to read.
+     */
+    private static ArrayList<Task> readFromFile(File file) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        if (!file.exists()) return tasks;
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                System.out.println(line);
+                String[] details = line.split(" \\| ");
+
+                Task task;
+                switch (details[0]) {
+                    case "TODO":
+                        task = new Task(details[2], Boolean.parseBoolean(details[1]));
+                        break;
+                    case "EVENT":
+                        task = new Event(details[2], Boolean.parseBoolean(details[1]), details[3], details[4]);
+                        break;
+                    case "DEADLINE":
+                        task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), details[3]);
+                        break;
+                    default:
+                        continue;
+                }
+                tasks.add(task);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found! Check the path.");
+        }
+        return tasks;
+    }
+
+
+    /**
+     * Creates a new, empty file.
+     * @param file The file to create.
+     */
+    private static void createFile(File file) {
+        try {
+            if (file.createNewFile()) {
+                System.out.println("File created successfully: " + file.getAbsolutePath());
+            } else {
+                System.out.println("File already existed (unexpected in this logic path).");
+            }
+        } catch (IOException e) {
+            System.err.println("Error creating file: " + e.getMessage());
+        }
+    }
+
+    private static void writeFile(ArrayList<Task> TaskList, File file) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Task task : TaskList) {
+                writer.write(task.storeTask());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
 
     public static void main(String[] args) {
+        String filePath = "src/data/data.txt";
+        File file = new File(filePath);
+        ArrayList<Task> tasks;
+
+        if (file.exists()) {
+            System.out.println("File exists. Reading from file...");
+            tasks = readFromFile(file);
+        } else {
+            System.out.println("File does not exist. Creating file...");
+            createFile(file);
+            tasks = new ArrayList<>();
+        }
+
         String line = "------------------------------";
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+
 
         //greet
         String welcomeMessage = "Hello I'm Dicky.";
@@ -57,6 +140,7 @@ public class Dicky {
                         System.out.printf("Task removed: %s \n", task.toString());
                         break;
                     case EXIT:
+                        writeFile(tasks, file);
                         return; // or break the loop
 
                     case TODO:
