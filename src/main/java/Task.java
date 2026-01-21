@@ -1,12 +1,10 @@
 public class Task {
     public Boolean status;
     public String taskName;
-    public Boolean deletedStatus;
 
     public Task(String taskName, boolean status) {
         this.taskName = taskName;
         this.status = status;
-        this.deletedStatus = false;
     }
 
     public Task(String taskName) {
@@ -20,6 +18,11 @@ public class Task {
                         "\n Now you have %d tasks in the list.",
                 this.toString(), taskCount);
     }
+
+    public String storeTask() {
+        return String.format("TODO | %s | %s", status.toString(), taskName);
+    }
+
 
     @Override
     public String toString() {

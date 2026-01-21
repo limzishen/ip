@@ -1,8 +1,18 @@
 public class Deadlines extends Task{
     String deadline;
+
+    public Deadlines (String taskName, Boolean status, String deadline) {
+        super(taskName, status);
+        this.deadline = deadline;
+    }
     public Deadlines(String taskName, String deadline) {
         super(taskName);
         this.deadline = deadline;
+    }
+
+    @Override
+    public String storeTask() {
+        return String.format("DEADLINE | %s | %s | %s", status.toString(), super.taskName, deadline);
     }
 
     @Override
