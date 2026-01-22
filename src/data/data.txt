@@ -1,4 +1,3 @@
-TODO | false | wdjwowjefw
-EVENT | true | eat | 12 | eat
-DEADLINE | false | sleep | tonight
-TODO | false | sleep
+TODO | true | read book
+DEADLINE | false | return library book | 2026-02-01 1200
+EVENT | false | project meeting | 2026-01-25 1400 | 2026-01-25 1600

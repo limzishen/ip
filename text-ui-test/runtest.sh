@@ -12,6 +12,10 @@ then
     rm text-ui-test/ACTUAL.TXT
 fi
 
+if [ -e "src/data/data.txt" ]; then
+    rm src/data/data.txt
+fi
+
 # Compile the code into the bin folder
 # Note: We point to src/main/java and include the exception subfolder
 if ! javac -cp src/main/java -Xlint:none -d bin src/main/java/*.java src/main/java/exception/*.java

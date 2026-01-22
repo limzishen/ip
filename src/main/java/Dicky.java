@@ -11,6 +11,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class Dicky {
     /**
      * Reads and prints the content of the file.
@@ -25,17 +29,16 @@ public class Dicky {
                 String line = scanner.nextLine();
                 System.out.println(line);
                 String[] details = line.split(" \\| ");
-
                 Task task;
                 switch (details[0]) {
                     case "TODO":
                         task = new Task(details[2], Boolean.parseBoolean(details[1]));
                         break;
                     case "EVENT":
-                        task = new Event(details[2], Boolean.parseBoolean(details[1]), details[3], details[4]);
+                        task = new Event(details[2], Boolean.parseBoolean(details[1]), Dicky.convertDateTimeString(details[3]), Dicky.convertDateTimeString(details[4]));
                         break;
                     case "DEADLINE":
-                        task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), details[3]);
+                        task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), Dicky.convertDateTimeString(details[3]));
                         break;
                     default:
                         continue;
@@ -44,8 +47,26 @@ public class Dicky {
             }
         } catch (FileNotFoundException e) {
             System.err.println("File not found! Check the path.");
+        } catch (InvalidActionException e) {
+            System.out.printf("Error: %s%n\n", e.getMessage());
+            System.out.println();
         }
         return tasks;
+    }
+
+    /**
+     * Convert String to LocalDateTime object
+     * @param dateTimeString the string to convert to datetime object
+     */
+    private static LocalDateTime convertDateTimeString(String dateTimeString) throws InvalidActionException{
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+        LocalDateTime localDateTime = null;
+        try {
+            localDateTime = LocalDateTime.parse(dateTimeString.trim(), formatter);
+        } catch (DateTimeParseException e) {
+            throw new InvalidActionException("Invalid date format! Use: yyyy-MM-dd HHmm");
+        }
+        return localDateTime;
     }
 
 
@@ -153,12 +174,15 @@ public class Dicky {
                             case DEADLINE -> {
                                 String[] deadlinesPart = splice.split(" /by ");
                                 if (deadlinesPart.length < 2) throw new InvalidActionException("missing deadline");
-                                yield new Deadlines(deadlinesPart[0], deadlinesPart[1]);
+                                LocalDateTime dtObject = Dicky.convertDateTimeString(deadlinesPart[1]);
+                                yield new Deadlines(deadlinesPart[0], dtObject);
                             }
                             case EVENT -> {
                                 String[] eventParts = splice.split(" /from | /to ");
                                 if (eventParts.length < 3) throw new InvalidActionException("missing start/end time");
-                                yield new Event(eventParts[0], eventParts[1], eventParts[0]);
+                                LocalDateTime startTime = Dicky.convertDateTimeString(eventParts[1]);
+                                LocalDateTime endTime = Dicky.convertDateTimeString(eventParts[2]);
+                                yield new Event(eventParts[0], startTime, endTime);
                             }
                             default -> throw new InvalidActionException("Unexpected error");
                         };

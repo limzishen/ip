@@ -1,12 +1,7 @@
 todo read book
-deadline study /by 8pm
-event lunch /from 12 /to 3
+deadline return library book /by 2026-02-01 1200
+event project meeting /from 2026-01-25 1400 /to 2026-01-25 1600
 list
 mark 1
-unmark 2
-delete 1
-todo
-deadline
-event
-deadline sleep /by
-event dinner /from 3
+delete
+exit

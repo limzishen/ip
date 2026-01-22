@@ -1,6 +1,9 @@
+import java.time.format.DateTimeFormatter;
+
 public class Task {
     public Boolean status;
     public String taskName;
+    public static final DateTimeFormatter saveFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
 
     public Task(String taskName, boolean status) {
         this.taskName = taskName;
