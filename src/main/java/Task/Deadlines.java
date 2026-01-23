@@ -1,6 +1,8 @@
+package Task;
+
 import java.time.LocalDateTime;
 
-public class Deadlines extends Task{
+public class Deadlines extends Task {
     LocalDateTime deadline;
 
     public Deadlines (String taskName, Boolean status, LocalDateTime deadline) {

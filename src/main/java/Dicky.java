@@ -1,12 +1,13 @@
-import java.nio.file.FileSystemNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import Task.*;
 import exception.InvalidActionException;
 import exception.MissingTaskException;
 
 import java.io.File;
 import java.time.LocalDateTime;
+
 
 public class Dicky {
     public static void main(String[] args) {
@@ -64,7 +65,7 @@ public class Dicky {
                         index = Integer.parseInt(input[1]) - 1;
                         Task task = tasks.get(index);
                         tasks.remove(index);
-                        System.out.printf("Task removed: %s \n", task.toString());
+                        System.out.printf("Task.Task removed: %s \n", task.toString());
                         break;
 
                     case EXIT:
