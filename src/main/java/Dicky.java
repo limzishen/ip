@@ -5,111 +5,22 @@ import java.util.Scanner;
 import exception.InvalidActionException;
 import exception.MissingTaskException;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class Dicky {
-    /**
-     * Reads and prints the content of the file.
-     * @param file The file to read.
-     */
-    private static ArrayList<Task> readFromFile(File file) {
-        ArrayList<Task> tasks = new ArrayList<>();
-        if (!file.exists()) return tasks;
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
-                String[] details = line.split(" \\| ");
-                Task task;
-                switch (details[0]) {
-                    case "TODO":
-                        task = new Task(details[2], Boolean.parseBoolean(details[1]));
-                        break;
-                    case "EVENT":
-                        task = new Event(details[2], Boolean.parseBoolean(details[1]), Dicky.convertDateTimeString(details[3]), Dicky.convertDateTimeString(details[4]));
-                        break;
-                    case "DEADLINE":
-                        task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), Dicky.convertDateTimeString(details[3]));
-                        break;
-                    default:
-                        continue;
-                }
-                tasks.add(task);
-            }
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found! Check the path.");
-        } catch (InvalidActionException e) {
-            System.out.printf("Error: %s%n\n", e.getMessage());
-            System.out.println();
-        }
-        return tasks;
-    }
-
-    /**
-     * Convert String to LocalDateTime object
-     * @param dateTimeString the string to convert to datetime object
-     */
-    private static LocalDateTime convertDateTimeString(String dateTimeString) throws InvalidActionException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-        LocalDateTime localDateTime = null;
-        try {
-            localDateTime = LocalDateTime.parse(dateTimeString.trim(), formatter);
-        } catch (DateTimeParseException e) {
-            throw new InvalidActionException("Invalid date format! Use: yyyy-MM-dd HHmm");
-        }
-        return localDateTime;
-    }
-
-
-    /**
-     * Creates a new, empty file.
-     * @param file The file to create.
-     */
-    private static void createFile(File file) {
-        try {
-            if (file.createNewFile()) {
-                System.out.println("File created successfully: " + file.getAbsolutePath());
-            } else {
-                System.out.println("File already existed (unexpected in this logic path).");
-            }
-        } catch (IOException e) {
-            System.err.println("Error creating file: " + e.getMessage());
-        }
-    }
-
-    private static void writeFile(ArrayList<Task> TaskList, File file) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Task task : TaskList) {
-                writer.write(task.storeTask());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("Error saving tasks: " + e.getMessage());
-        }
-    }
-
-
     public static void main(String[] args) {
         String filePath = "src/data/data.txt";
         File file = new File(filePath);
-        ArrayList<Task> tasks;
+        TaskList tasks;
 
         if (file.exists()) {
             System.out.println("File exists. Reading from file...");
-            tasks = readFromFile(file);
+            tasks = new TaskList(Storage.readFromFile(file));
         } else {
             System.out.println("File does not exist. Creating file...");
-            createFile(file);
-            tasks = new ArrayList<>();
+            Storage.createFile(file);
+            tasks = new TaskList();
         }
 
         String line = "------------------------------";
@@ -135,13 +46,7 @@ public class Dicky {
 
                 switch (cmd) {
                     case LIST:
-                        if (tasks.isEmpty()) {
-                            System.out.println("No items in list");
-                        } else {
-                            for (int i = 0; i < tasks.size(); i++) {
-                                System.out.printf("%d: %s%n", i + 1, tasks.get(i));
-                            }
-                        }
+                        System.out.print(tasks.printList());
                         break;
 
                     case MARK:
@@ -154,14 +59,19 @@ public class Dicky {
                                 : "OK, I've marked this task as not done yet:");
                         System.out.println(tasks.get(index));
                         break;
+
                     case DELETE:
-                        Task task = tasks.get(Integer.parseInt(input[1]) - 1);
                         index = Integer.parseInt(input[1]) - 1;
+                        Task task = tasks.get(index);
                         tasks.remove(index);
                         System.out.printf("Task removed: %s \n", task.toString());
                         break;
+
                     case EXIT:
-                        writeFile(tasks, file);
+                        Storage.writeFile(tasks.getList(), file);
+                        String exitMessage = "Bye. Hope to see you again soon!";
+                        System.out.println(exitMessage);
+                        System.out.println(line);
                         return; // or break the loop
 
                     case TODO:
@@ -174,19 +84,19 @@ public class Dicky {
                             case DEADLINE -> {
                                 String[] deadlinesPart = splice.split(" /by ");
                                 if (deadlinesPart.length < 2) throw new InvalidActionException("missing deadline");
-                                LocalDateTime dtObject = Dicky.convertDateTimeString(deadlinesPart[1]);
+                                LocalDateTime dtObject = Storage.convertDateTimeString(deadlinesPart[1]);
                                 yield new Deadlines(deadlinesPart[0], dtObject);
                             }
                             case EVENT -> {
                                 String[] eventParts = splice.split(" /from | /to ");
                                 if (eventParts.length < 3) throw new InvalidActionException("missing start/end time");
-                                LocalDateTime startTime = Dicky.convertDateTimeString(eventParts[1]);
-                                LocalDateTime endTime = Dicky.convertDateTimeString(eventParts[2]);
+                                LocalDateTime startTime = Storage.convertDateTimeString(eventParts[1]);
+                                LocalDateTime endTime = Storage.convertDateTimeString(eventParts[2]);
                                 yield new Event(eventParts[0], startTime, endTime);
                             }
                             default -> throw new InvalidActionException("Unexpected error");
                         };
-                        tasks.add(newTask);
+                        tasks.addTask(newTask);
                         System.out.println(newTask.taskAddedMessage(tasks.size()));
                         break;
 
@@ -203,9 +113,6 @@ public class Dicky {
         }
 
         // Exit
-        System.out.println(line);
-        String exitMessage = "Bye. Hope to see you again soon!";
-        System.out.println(exitMessage);
         System.out.println(line);
     }
 }
