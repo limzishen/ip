@@ -1,4 +1,6 @@
-import Task.Task;
+package dicky;
+
+import task.Task;
 
 import java.util.ArrayList;
 

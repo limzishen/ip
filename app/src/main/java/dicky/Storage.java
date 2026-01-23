@@ -1,4 +1,6 @@
-import Task.*;
+package dicky;
+
+import task.*;
 import exception.InvalidActionException;
 
 import java.io.*;

@@ -6,7 +6,7 @@
 # Gradle build files
 /.gradle/
 /build/
-src/main/resources/docs/
+app/src/main/resources/docs/
 
 # MacOS custom attributes files created by Finder
 .DS_Store
@@ -16,3 +16,12 @@ bin/
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 notes.txt
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+# Ignore Kotlin plugin data
+.kotlin

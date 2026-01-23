@@ -1,12 +1,17 @@
+package dicky;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
-import Task.*;
+import task.*;
 import exception.InvalidActionException;
 import exception.MissingTaskException;
 
 import java.io.File;
 import java.time.LocalDateTime;
+
+import static dicky.Command.MARK;
+import static dicky.Command.fromString;
 
 
 public class Dicky {
@@ -42,7 +47,7 @@ public class Dicky {
                 if (action.isEmpty()) continue;
 
                 String[] input = action.split("\\s+");
-                Command cmd = Command.fromString(input[0]);
+                Command cmd = fromString(input[0]);
                 int index;
 
                 switch (cmd) {
@@ -53,7 +58,7 @@ public class Dicky {
                     case MARK:
                     case UNMARK:
                         index = Integer.parseInt(input[1]) - 1;
-                        boolean isDone = (cmd == Command.MARK);
+                        boolean isDone = (cmd == MARK);
                         tasks.get(index).status = isDone;
 
                         System.out.println(isDone ? "Nice! I've marked this task as done:"
