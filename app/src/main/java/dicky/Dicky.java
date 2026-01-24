@@ -13,8 +13,23 @@ import java.time.LocalDateTime;
 import static dicky.Command.MARK;
 import static dicky.Command.fromString;
 
-
+/**
+ * The main entry point for the Dicky chatbot application.
+ * Dicky is a task management CLI that allows users to add, delete, mark, and clear tasks.
+ * It features persistent storage using a local text file.
+ */
 public class Dicky {
+    /**
+     * Starts the Dicky application.
+     * <p>
+     * The method initializes storage by checking for an existing data file,
+     * processes user input through a command-line interface, and executes
+     * corresponding task operations until the 'exit' command is received.
+     * </p>
+     *
+     * @param args Command line arguments. If provided, the first argument
+     * is used as the file path for data storage.
+     */
     public static void main(String[] args) {
         String filePath = (args.length > 0) ? args[0] : "src/data/data.txt";
         File file = new File(filePath);
