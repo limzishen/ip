@@ -31,6 +31,8 @@ public class TaskList {
         return this.tasks.get(index);
     }
 
+    public void clearList() { this.tasks = new ArrayList<>(); }
+
     public void remove(int index) throws IndexOutOfBoundsException {
         this.tasks.remove(index);
     }
@@ -42,7 +44,7 @@ public class TaskList {
     public String printList() {
         StringBuilder sb = new StringBuilder();
         if (tasks.isEmpty()) {
-            sb.append("No items in list");
+            sb.append("No items in list \n");
         } else {
             for (int i = 0; i < tasks.size(); i++) {
                 sb.append(String.format("%d: %s \n", i + 1, tasks.get(i)));

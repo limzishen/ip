@@ -1,7 +1,7 @@
 package dicky;
 
 public enum Command {
-    TODO, DEADLINE, EVENT, LIST, MARK, UNMARK, EXIT, DELETE, UNKNOWN;
+    TODO, DEADLINE, EVENT, LIST, MARK, UNMARK, EXIT, DELETE, CLEAR, UNKNOWN;
 
     /**
      * Converts a string to a Command enum.

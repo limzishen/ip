@@ -16,9 +16,13 @@ import static dicky.Command.fromString;
 
 public class Dicky {
     public static void main(String[] args) {
-        String filePath = "src/data/data.txt";
+        String filePath = (args.length > 0) ? args[0] : "src/data/data.txt";
         File file = new File(filePath);
         TaskList tasks;
+
+        if (file.getParentFile() != null) {
+            file.getParentFile().mkdirs();
+        }
 
         if (file.exists()) {
             System.out.println("File exists. Reading from file...");
@@ -65,7 +69,6 @@ public class Dicky {
                                 : "OK, I've marked this task as not done yet:");
                         System.out.println(tasks.get(index));
                         break;
-
                     case DELETE:
                         index = Integer.parseInt(input[1]) - 1;
                         Task task = tasks.get(index);
@@ -79,7 +82,13 @@ public class Dicky {
                         System.out.println(exitMessage);
                         System.out.println(line);
                         return; // or break the loop
-
+                    case CLEAR:
+                        tasks.clearList();
+                        Storage.writeFile(tasks.getList(), file);
+                        String clearMessage = "Cleared Task List";
+                        System.out.println(clearMessage);
+                        System.out.println(line);
+                        break;
                     case TODO:
                     case DEADLINE:
                     case EVENT:
