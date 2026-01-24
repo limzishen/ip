@@ -1,2 +1,3 @@
-TODO | false | read
 TODO | false | read book
+TODO | false | read news
+TODO | false | dance

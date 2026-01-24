@@ -94,6 +94,27 @@ class DickyTest {
         // Check Final Exit
         assertTrue(output.contains("Bye. Hope to see you again soon!"), "Should show exit message");
     }
+    @Test
+    void main_testFind() {
+        String shellInput = String.join("\n",
+                "todo read book",
+                "todo read news",
+                "todo dance",
+                "find read"
+        ) + "\n";
+
+        provideInput(shellInput);
+        Dicky.main(new String[]{stubPath});
+        String output = testOut.toString();
+
+        assertTrue(output.contains("[T] [ ] read book"));
+        assertTrue(output.contains("[T] [ ] read news"));
+        assertTrue(output.contains("[T] [ ] dance"));
+        assertTrue(output.contains("1: [T] [ ] read book \n" +
+                "2: [T] [ ] read news \n"));
+
+
+    }
 
 
     @Test

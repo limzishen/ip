@@ -88,6 +88,17 @@ public class TaskList {
         return this.tasks;
     }
 
+    public TaskList find(String keyword) {
+        TaskList temp = new TaskList();
+
+        for (Task task: tasks) {
+            if (task.taskName.contains(keyword)) {
+                temp.addTask(task);
+            }
+        }
+        return temp;
+    }
+
     /**
      * Formats the entire task list into a user-friendly string for display.
      * If the list is empty, returns a specific message indicating no items.
