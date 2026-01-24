@@ -114,7 +114,10 @@ public class Dicky {
                         tasks.addTask(newTask);
                         System.out.println(newTask.taskAddedMessage(tasks.size()));
                         break;
-
+                case FIND:
+                    TaskList temp = tasks.find(String.join(" ", Arrays.copyOfRange(input, 1, input.length)));
+                    System.out.println(temp.printList());
+                    break;
                     case UNKNOWN:
                     default:
                         throw new InvalidActionException("Invalid Action: " + input[0]);

@@ -41,6 +41,17 @@ public class TaskList {
         return this.tasks;
     }
 
+    public TaskList find(String keyword) {
+        TaskList temp = new TaskList();
+
+        for (Task task: tasks) {
+            if (task.taskName.contains(keyword)) {
+                temp.addTask(task);
+            }
+        }
+        return temp;
+    }
+
     public String printList() {
         StringBuilder sb = new StringBuilder();
         if (tasks.isEmpty()) {
