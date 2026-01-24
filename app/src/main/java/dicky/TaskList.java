@@ -1,8 +1,8 @@
 package dicky;
 
-import task.Task;
-
 import java.util.ArrayList;
+
+import task.Task;
 
 public class TaskList {
     private ArrayList<Task> tasks;
@@ -64,7 +64,9 @@ public class TaskList {
     /**
      * Removes all tasks from the list, resulting in an empty list.
      */
-    public void clearList() { this.tasks = new ArrayList<>(); }
+    public void clearList() {
+        this.tasks = new ArrayList<>();
+    }
 
     /**
      * Removes the task at the specified position in this list.

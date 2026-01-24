@@ -5,6 +5,7 @@ public enum Command {
 
     /**
      * Converts a string to a Command enum.
+     *
      * @param str The user input command word
      * @return The matching Command or UNKNOWN
      */
