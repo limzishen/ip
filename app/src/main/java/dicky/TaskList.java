@@ -91,7 +91,7 @@ public class TaskList {
     public TaskList find(String keyword) {
         TaskList temp = new TaskList();
 
-        for (Task task: tasks) {
+        for (Task task : tasks) {
             if (task.taskName.contains(keyword)) {
                 temp.addTask(task);
             }

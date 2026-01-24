@@ -94,7 +94,7 @@ public class Storage {
      * Each task is converted to a string using its {@code storeTask()} method.
      *
      * @param TaskList The list of tasks to be saved.
-     * @param file The file object where the data will be written.
+     * @param file     The file object where the data will be written.
      */
     public static void writeFile(ArrayList<Task> TaskList, File file) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {

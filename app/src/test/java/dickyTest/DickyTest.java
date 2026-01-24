@@ -1,15 +1,20 @@
 package dickyTest;
-import dicky.Dicky;
-import task.*;
-import java.io.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import dicky.Dicky;
 
 class DickyTest {
     private final InputStream systemIn = System.in;
@@ -94,6 +99,7 @@ class DickyTest {
         // Check Final Exit
         assertTrue(output.contains("Bye. Hope to see you again soon!"), "Should show exit message");
     }
+
     @Test
     void main_testFind() {
         String shellInput = String.join("\n",

@@ -29,7 +29,7 @@ public class Dicky {
      * </p>
      *
      * @param args Command line arguments. If provided, the first argument
-     * is used as the file path for data storage.
+     *             is used as the file path for data storage.
      */
     public static void main(String[] args) {
         String filePath = (args.length > 0) ? args[0] : "src/data/data.txt";
@@ -92,51 +92,51 @@ public class Dicky {
                     System.out.printf("Task.Task removed: %s \n", task.toString());
                     break;
 
-                    case EXIT:
-                        Storage.writeFile(tasks.getList(), file);
-                        String exitMessage = "Bye. Hope to see you again soon!";
-                        System.out.println(exitMessage);
-                        System.out.println(line);
-                        return; // or break the loop
-                    case CLEAR:
-                        tasks.clearList();
-                        Storage.writeFile(tasks.getList(), file);
-                        String clearMessage = "Cleared Task List";
-                        System.out.println(clearMessage);
-                        System.out.println(line);
-                        break;
-                    case TODO:
-                    case DEADLINE:
-                    case EVENT:
-                        if (input.length < 2) throw new MissingTaskException("No task");
-                        String splice = String.join(" ", Arrays.copyOfRange(input, 1, input.length));
-                        Task newTask = switch (cmd) {
-                            case TODO -> new Task(splice);
-                            case DEADLINE -> {
-                                String[] deadlinesPart = splice.split(" /by ");
-                                if (deadlinesPart.length < 2) throw new InvalidActionException("missing deadline");
-                                LocalDateTime dtObject = Storage.convertDateTimeString(deadlinesPart[1]);
-                                yield new Deadlines(deadlinesPart[0], dtObject);
-                            }
-                            case EVENT -> {
-                                String[] eventParts = splice.split(" /from | /to ");
-                                if (eventParts.length < 3) throw new InvalidActionException("missing start/end time");
-                                LocalDateTime startTime = Storage.convertDateTimeString(eventParts[1]);
-                                LocalDateTime endTime = Storage.convertDateTimeString(eventParts[2]);
-                                yield new Event(eventParts[0], startTime, endTime);
-                            }
-                            default -> throw new InvalidActionException("Unexpected error");
-                        };
-                        tasks.addTask(newTask);
-                        System.out.println(newTask.taskAddedMessage(tasks.size()));
-                        break;
+                case EXIT:
+                    Storage.writeFile(tasks.getList(), file);
+                    String exitMessage = "Bye. Hope to see you again soon!";
+                    System.out.println(exitMessage);
+                    System.out.println(line);
+                    return; // or break the loop
+                case CLEAR:
+                    tasks.clearList();
+                    Storage.writeFile(tasks.getList(), file);
+                    String clearMessage = "Cleared Task List";
+                    System.out.println(clearMessage);
+                    System.out.println(line);
+                    break;
+                case TODO:
+                case DEADLINE:
+                case EVENT:
+                    if (input.length < 2) throw new MissingTaskException("No task");
+                    String splice = String.join(" ", Arrays.copyOfRange(input, 1, input.length));
+                    Task newTask = switch (cmd) {
+                        case TODO -> new Task(splice);
+                        case DEADLINE -> {
+                            String[] deadlinesPart = splice.split(" /by ");
+                            if (deadlinesPart.length < 2) throw new InvalidActionException("missing deadline");
+                            LocalDateTime dtObject = Storage.convertDateTimeString(deadlinesPart[1]);
+                            yield new Deadlines(deadlinesPart[0], dtObject);
+                        }
+                        case EVENT -> {
+                            String[] eventParts = splice.split(" /from | /to ");
+                            if (eventParts.length < 3) throw new InvalidActionException("missing start/end time");
+                            LocalDateTime startTime = Storage.convertDateTimeString(eventParts[1]);
+                            LocalDateTime endTime = Storage.convertDateTimeString(eventParts[2]);
+                            yield new Event(eventParts[0], startTime, endTime);
+                        }
+                        default -> throw new InvalidActionException("Unexpected error");
+                    };
+                    tasks.addTask(newTask);
+                    System.out.println(newTask.taskAddedMessage(tasks.size()));
+                    break;
                 case FIND:
                     TaskList temp = tasks.find(String.join(" ", Arrays.copyOfRange(input, 1, input.length)));
                     System.out.println(temp.printList());
                     break;
-                    case UNKNOWN:
-                    default:
-                        throw new InvalidActionException("Invalid Action: " + input[0]);
+                case UNKNOWN:
+                default:
+                    throw new InvalidActionException("Invalid Action: " + input[0]);
                 }
             } catch (InvalidActionException | MissingTaskException e) {
                 System.out.printf("Error: %s%n\n", e.getMessage());
