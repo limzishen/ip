@@ -1,15 +1,17 @@
 package task;
+
 import java.time.LocalDateTime;
 
 public class Event extends Task {
     public LocalDateTime startTime;
     public LocalDateTime endTime;
 
-    public Event (String taskName, Boolean status, LocalDateTime startTime, LocalDateTime endTime) {
+    public Event(String taskName, Boolean status, LocalDateTime startTime, LocalDateTime endTime) {
         super(taskName, status);
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
     public Event(String taskName, LocalDateTime startTime, LocalDateTime endTime) {
         super(taskName);
         this.startTime = startTime;

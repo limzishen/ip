@@ -5,10 +5,11 @@ import java.time.LocalDateTime;
 public class Deadlines extends Task {
     LocalDateTime deadline;
 
-    public Deadlines (String taskName, Boolean status, LocalDateTime deadline) {
+    public Deadlines(String taskName, Boolean status, LocalDateTime deadline) {
         super(taskName, status);
         this.deadline = deadline;
     }
+
     public Deadlines(String taskName, LocalDateTime deadline) {
         super(taskName);
         this.deadline = deadline;

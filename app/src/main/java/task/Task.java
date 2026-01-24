@@ -17,11 +17,7 @@ public class Task {
     }
 
     public String taskAddedMessage(int taskCount) {
-        return String.format(
-                "Got it. I've added this task: \n " +
-                        "%s" +
-                        "\n Now you have %d tasks in the list.",
-                this.toString(), taskCount);
+        return String.format("Got it. I've added this task: \n " + "%s" + "\n Now you have %d tasks in the list.", this.toString(), taskCount);
     }
 
     public String storeTask() {
@@ -32,8 +28,7 @@ public class Task {
     @Override
     public String toString() {
         String statusIcon = status ? "X" : " "; // X if true, space if false
-        return String.format("[T] [%s] %s",
-                statusIcon, taskName);
+        return String.format("[T] [%s] %s", statusIcon, taskName);
     }
 
 }

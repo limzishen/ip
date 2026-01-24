@@ -1,7 +1,7 @@
 package exception;
 
-public class InvalidActionException extends Exception{
-    public InvalidActionException (String message) {
+public class InvalidActionException extends Exception {
+    public InvalidActionException(String message) {
         super(message);
     }
 

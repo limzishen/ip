@@ -1,8 +1,8 @@
 package dicky;
 
-import task.Task;
-
 import java.util.ArrayList;
+
+import task.Task;
 
 public class TaskList {
     private ArrayList<Task> tasks;
@@ -31,7 +31,9 @@ public class TaskList {
         return this.tasks.get(index);
     }
 
-    public void clearList() { this.tasks = new ArrayList<>(); }
+    public void clearList() {
+        this.tasks = new ArrayList<>();
+    }
 
     public void remove(int index) throws IndexOutOfBoundsException {
         this.tasks.remove(index);

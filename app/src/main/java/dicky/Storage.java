@@ -1,18 +1,25 @@
 package dicky;
 
-import task.*;
-import exception.InvalidActionException;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import exception.InvalidActionException;
+import task.Deadlines;
+import task.Event;
+import task.Task;
+
 public class Storage {
     /**
      * Reads and prints the content of the file.
+     *
      * @param file The file to read.
      */
     public static ArrayList<Task> readFromFile(File file) {
@@ -26,17 +33,17 @@ public class Storage {
                 String[] details = line.split(" \\| ");
                 Task task;
                 switch (details[0]) {
-                    case "TODO":
-                        task = new Task(details[2], Boolean.parseBoolean(details[1]));
-                        break;
-                    case "EVENT":
-                        task = new Event(details[2], Boolean.parseBoolean(details[1]), Storage.convertDateTimeString(details[3]), Storage.convertDateTimeString(details[4]));
-                        break;
-                    case "DEADLINE":
-                        task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), Storage.convertDateTimeString(details[3]));
-                        break;
-                    default:
-                        continue;
+                case "TODO":
+                    task = new Task(details[2], Boolean.parseBoolean(details[1]));
+                    break;
+                case "EVENT":
+                    task = new Event(details[2], Boolean.parseBoolean(details[1]), Storage.convertDateTimeString(details[3]), Storage.convertDateTimeString(details[4]));
+                    break;
+                case "DEADLINE":
+                    task = new Deadlines(details[2], Boolean.parseBoolean(details[1]), Storage.convertDateTimeString(details[3]));
+                    break;
+                default:
+                    continue;
                 }
                 tasks.add(task);
             }
@@ -51,9 +58,10 @@ public class Storage {
 
     /**
      * Convert String to LocalDateTime object
+     *
      * @param dateTimeString the string to convert to datetime object
      */
-    public static LocalDateTime convertDateTimeString(String dateTimeString) throws InvalidActionException{
+    public static LocalDateTime convertDateTimeString(String dateTimeString) throws InvalidActionException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
         LocalDateTime localDateTime = null;
         try {
@@ -66,6 +74,7 @@ public class Storage {
 
     /**
      * Creates a new, empty file.
+     *
      * @param file The file to create.
      */
     public static void createFile(File file) {
@@ -90,8 +99,6 @@ public class Storage {
             System.err.println("Error saving tasks: " + e.getMessage());
         }
     }
-
-
 
 
 }
