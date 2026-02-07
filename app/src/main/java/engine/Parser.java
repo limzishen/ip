@@ -14,6 +14,7 @@ import exception.MissingTaskException;
  * Deals with making sense of the user command.
  */
 public class Parser {
+    private Parser() { }
 
     /**
      * Parses the command type from the first word of input.
@@ -39,28 +40,22 @@ public class Parser {
     public static String parseDetails(String input) {
         String[] details = input.split("\\s+");
         Command cmd = parseCommand(input);
-        String result ="";
 
-        switch (cmd) {
-        case MARK:
-        case UNMARK:
-        case DELETE:
-            result = details[1];
-            break;
-        case FIND:
-        case TODO:
-        case DEADLINE:
-        case EVENT:
-            result = String.join(" ", Arrays.copyOfRange(details, 1, details.length));
-            break;
-        case LIST:
-        case CLEAR:
-        case UNKNOWN:
-        case EXIT:
-            break;
+        if (isIndexCommand(cmd)) {
+            return details[1];
         }
+        if (isDescriptionCommand(cmd)) {
+            return String.join(" ", Arrays.copyOfRange(details, 1, details.length));
+        }
+        return "";
+    }
 
-        return result;
+    private static boolean isIndexCommand(Command cmd) {
+        return cmd == Command.MARK || cmd == Command.UNMARK || cmd == Command.DELETE;
+    }
+
+    private static boolean isDescriptionCommand(Command cmd) {
+        return cmd == Command.FIND || cmd == Command.TODO || cmd == Command.DEADLINE || cmd == Command.EVENT;
     }
 
 

@@ -38,7 +38,7 @@ public class Deadlines extends Task {
      */
     @Override
     public String storeTask() {
-        return String.format("DEADLINE | %s | %s | %s", status.toString(), super.taskName, deadline.format(super.saveFormat));
+        return String.format("DEADLINE | %s | %s | %s", status.toString(), super.taskName, deadline.format(super.SAVE_FORMAT));
     }
 
     /**
@@ -51,6 +51,6 @@ public class Deadlines extends Task {
     public String toString() {
         String statusIcon = status ? "X" : " "; // X if true, space if false
         return String.format("[D] [%s] %s Datetime: %s",
-                statusIcon, taskName, deadline.format(super.saveFormat));
+                statusIcon, taskName, deadline.format(super.SAVE_FORMAT));
     }
 }

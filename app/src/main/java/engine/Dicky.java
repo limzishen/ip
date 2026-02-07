@@ -4,6 +4,7 @@ import task.Task;
 import ui.Ui;
 
 import exception.InvalidActionException;
+import exception.MissingTaskException;
 
 /**
  * The main class for the Dicky chatbot application.
@@ -41,53 +42,57 @@ public class Dicky {
                 Command cmd = Parser.parseCommand(fullCommand);
                 String details = Parser.parseDetails(fullCommand);
 
-                switch (cmd) {
-                case LIST:
-                    ui.printList(tasks);
-                    break;
-                case MARK:
-                case UNMARK:
-                    int index = Integer.parseInt(details) - 1;
-                    boolean isDone = (cmd == Command.MARK);
-                    tasks.get(index).status = isDone;
-                    ui.markMessage(isDone, tasks.get(index));
-                    break; 
-                case DELETE:
-                    int deleteIndex = Integer.parseInt(details) - 1;
-                    Task task = tasks.get(deleteIndex);
-                    tasks.remove(deleteIndex);
-                    ui.showDeletedMessage(task);
-                    break;
-                case CLEAR:
-                    tasks.clearList();
-                    ui.clearList();
-                    break;
-                case TODO:
-                case DEADLINE:
-                case EVENT:
-                    Task newTask = Parser.parseTask(cmd, details);
-                    tasks.addTask(newTask);
-                    ui.showMessage("Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.\n");
-                    break;
-                case FIND:
-                    TaskList temp = tasks.find(details);
-                    ui.printList(temp);
-                    break;
-                
-                case EXIT:
+                if (cmd == Command.EXIT) {
                     isExit = true;
                     ui.showExit();
                     storage.writeFile(tasks);
-                    break;
-                case UNKNOWN:
-                default:
-                    throw new InvalidActionException("Invalid Action: " + cmd);
+                } else {
+                    executeCommand(cmd, details);
                 }
             } catch (Exception e) {
                 ui.showError(e.getMessage());
             } finally {
                 ui.showLine();
             }
+        }
+    }
+
+    private void executeCommand(Command cmd, String details) throws InvalidActionException, MissingTaskException {
+        switch (cmd) {
+        case LIST:
+            ui.printList(tasks);
+            break;
+        case MARK:
+        case UNMARK:
+            int index = Integer.parseInt(details) - 1;
+            boolean isDone = (cmd == Command.MARK);
+            tasks.get(index).status = isDone;
+            ui.markMessage(isDone, tasks.get(index));
+            break;
+        case DELETE:
+            int deleteIndex = Integer.parseInt(details) - 1;
+            Task task = tasks.get(deleteIndex);
+            tasks.remove(deleteIndex);
+            ui.showDeletedMessage(task);
+            break;
+        case CLEAR:
+            tasks.clearList();
+            ui.clearList();
+            break;
+        case TODO:
+        case DEADLINE:
+        case EVENT:
+            Task newTask = Parser.parseTask(cmd, details);
+            tasks.addTask(newTask);
+            ui.showMessage("Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.\n");
+            break;
+        case FIND:
+            TaskList temp = tasks.find(details);
+            ui.printList(temp);
+            break;
+        case UNKNOWN:
+        default:
+            throw new InvalidActionException("Invalid Action: " + cmd);
         }
     }
 

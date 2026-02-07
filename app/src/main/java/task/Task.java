@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 public class Task {
     public Boolean status;
     public String taskName;
-    public static final DateTimeFormatter saveFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    public static final DateTimeFormatter SAVE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
 
     /**
      * Constructs a new Task with a specified name and completion status.
