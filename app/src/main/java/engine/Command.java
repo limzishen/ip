@@ -1,4 +1,4 @@
-package dicky;
+package engine;
 
 public enum Command {
     TODO, DEADLINE, EVENT, LIST, MARK, UNMARK, EXIT, DELETE, CLEAR, FIND, UNKNOWN;

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import dicky.Dicky;
+import engine.Dicky;
 
 class DickyTest {
     private final InputStream systemIn = System.in;
@@ -28,7 +28,7 @@ class DickyTest {
     @BeforeEach
     void setUpOutput() throws IOException {
         testOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(testOut));
+        System.setOut(new PrintStream(testOut, true));
         Path path = tempDir.resolve("test_data.txt");
 
         // 3. Assign to the CLASS variable (no 'String' keyword here)
@@ -106,7 +106,8 @@ class DickyTest {
                 "todo read book",
                 "todo read news",
                 "todo dance",
-                "find read"
+                "find read",
+                "exit"
         ) + "\n";
 
         provideInput(shellInput);
@@ -118,8 +119,6 @@ class DickyTest {
         assertTrue(output.contains("[T] [ ] dance"));
         assertTrue(output.contains("1: [T] [ ] read book \n" +
                 "2: [T] [ ] read news \n"));
-
-
     }
 
 
@@ -135,6 +134,6 @@ class DickyTest {
         // Assert
         String output = testOut.toString();
         System.out.println(output);
-        assertTrue(output.contains("Invalid Action: blahblah"));
+        assertTrue(output.contains("Invalid Action: UNKNOWN"));
     }
 }

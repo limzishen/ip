@@ -3,12 +3,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import engine.Parser;
+import engine.Storage;
+import engine.TaskList;
 import task.*;
-import dicky.Storage;
 import java.io.*;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 class StorageTest {
 
@@ -18,7 +19,7 @@ class StorageTest {
     @Test
     void testConvertDateTimeString_validDate_success() throws Exception {
         String input = "2026-01-24 1542";
-        LocalDateTime result = Storage.convertDateTimeString(input);
+        LocalDateTime result = Parser.convertDateTimeString(input);
 
         assertNotNull(result);
         assertEquals(2026, result.getYear());
@@ -32,24 +33,26 @@ class StorageTest {
     void testConvertDateTimeString_invalidDate_throwsException() {
         String badInput = "24/01/2026 15:42";
         assertThrows(exception.InvalidActionException.class, () -> {
-            Storage.convertDateTimeString(badInput);
+            Parser.convertDateTimeString(badInput);
         });
     }
 
     @Test
     void testWriteAndRead_lifecycle_success() throws IOException {
-        File tempFile = tempDir.resolve("tasks.txt").toFile();
-        ArrayList<Task> originalTasks = new ArrayList<>();
+        String filePath = tempDir.resolve("tasks.txt").toString();
+        Storage storage = new Storage(filePath);
+        TaskList originalTasks = new TaskList();
 
-        // Assuming Task has a constructor (description, isDone)
-        originalTasks.add(new Task("Buy Milk", false));
+        originalTasks.addTask(new Task("Buy Milk", false));
 
         // 1. Test Writing
-        Storage.writeFile(originalTasks, tempFile);
+        storage.writeFile(originalTasks);
+        File tempFile = new File(filePath);
         assertTrue(tempFile.exists(), "File should be created after writing");
 
         // 2. Test Reading
-        ArrayList<Task> loadedTasks = Storage.readFromFile(tempFile);
+        Storage storageReader = new Storage(filePath);
+        TaskList loadedTasks = storageReader.readFromFile();
         assertEquals(1, loadedTasks.size());
         assertEquals("Buy Milk", loadedTasks.get(0).taskName);
     }

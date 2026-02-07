@@ -28,7 +28,7 @@ java {
 
 application {
     // SE-EDU format: mainClass.set() is the correct modern syntax
-    mainClass.set('dicky.Dicky')
+    mainClass.set('engine.Dicky')
 }
 
 run {
