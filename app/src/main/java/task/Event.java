@@ -42,7 +42,7 @@ public class Event extends Task {
      */
     @Override
     public String storeTask() {
-        return String.format("EVENT | %s | %s | %s | %s", status.toString(), super.taskName, startTime.format(super.SAVE_FORMAT), endTime.format(super.SAVE_FORMAT));
+        return String.format("EVENT | %s | %s | %s | %s", status.toString(), super.taskName, startTime.format(Task.SAVE_FORMAT), endTime.format(Task.SAVE_FORMAT));
     }
 
     /**
@@ -55,7 +55,7 @@ public class Event extends Task {
     public String toString() {
         String statusIcon = status ? "X" : " "; // X if true, space if false
         return String.format("[E] [%s] %s Start Time: %s End Time: %s",
-                statusIcon, taskName, startTime.format(super.SAVE_FORMAT), endTime.format(super.SAVE_FORMAT));
+                statusIcon, taskName, startTime.format(Task.SAVE_FORMAT), endTime.format(Task.SAVE_FORMAT));
     }
 
 }

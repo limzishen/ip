@@ -57,6 +57,14 @@ public class Dicky {
         }
     }
 
+    /**
+     * Executes the logic for a specific command.
+     *
+     * @param cmd The command type to execute.
+     * @param details The arguments or description associated with the command.
+     * @throws InvalidActionException If the command is unrecognized or parameters are invalid.
+     * @throws MissingTaskException If required task details are missing.
+     */
     private void executeCommand(Command cmd, String details) throws InvalidActionException, MissingTaskException {
         switch (cmd) {
         case LIST:
@@ -94,6 +102,92 @@ public class Dicky {
         default:
             throw new InvalidActionException("Invalid Action: " + cmd);
         }
+    }
+
+    /**
+     * Gets the list of all tasks as a formatted string.
+     *
+     * @return A string representation of all tasks.
+     */
+    public String getListString() {
+        return tasks.printList();
+    }
+
+    /**
+     * Marks or unmarks a task as done/not done.
+     *
+     * @param index The 0-based index of the task.
+     * @param isDone True to mark as done, false to mark as not done.
+     * @return A message confirming the action.
+     * @throws IndexOutOfBoundsException If the index is invalid.
+     */
+    public String markTask(int index, boolean isDone) {
+        Task task = tasks.get(index);
+        task.status = isDone;
+        String status = isDone ? "marked as done" : "marked as not done";
+        return "Got it. I've " + status + ":\n  " + task;
+    }
+
+    /**
+     * Deletes a task from the list.
+     *
+     * @param index The 0-based index of the task to delete.
+     * @return A message confirming the deletion.
+     * @throws IndexOutOfBoundsException If the index is invalid.
+     */
+    public String deleteTask(int index) {
+        Task task = tasks.get(index);
+        tasks.remove(index);
+        return "Noted. I've removed this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
+    }
+
+    /**
+     * Adds a new task to the list.
+     *
+     * @param cmd The command type (TODO, DEADLINE, or EVENT).
+     * @param details The task details/description.
+     * @return A message confirming the task was added.
+     * @throws InvalidActionException If task creation fails.
+     * @throws MissingTaskException If required task details are missing.
+     */
+    public String addTask(Command cmd, String details) throws InvalidActionException, MissingTaskException {
+        Task newTask = Parser.parseTask(cmd, details);
+        tasks.addTask(newTask);
+        return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+    }
+
+    /**
+     * Finds tasks matching a keyword.
+     *
+     * @param keyword The search keyword.
+     * @return A formatted string of matching tasks.
+     */
+    public String findTasks(String keyword) {
+        TaskList temp = tasks.find(keyword);
+        if (temp.size() == 0) {
+            return "No matching tasks found.";
+        }
+        StringBuilder result = new StringBuilder("Here are the matching tasks:\n");
+        for (int i = 0; i < temp.size(); i++) {
+            result.append((i + 1)).append(". ").append(temp.get(i)).append("\n");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Clears all tasks from the list.
+     *
+     * @return A confirmation message.
+     */
+    public void clearTasks() {
+        tasks.clearList();
+    }
+
+    /**
+     * Saves all tasks to the storage file.
+     */
+    public void write() {
+        storage.writeFile(tasks);
     }
 
     /**
