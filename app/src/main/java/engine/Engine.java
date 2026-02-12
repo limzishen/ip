@@ -3,13 +3,16 @@ package engine;
 import task.Task;
 import exception.InvalidActionException;
 import exception.MissingTaskException;
+import ui.Ui; 
 
 public class Engine {
     private final Storage storage;
     private final TaskList tasks;
+    private final Ui ui;
     String filePath = "src/data/data.txt";
 
     public Engine(String filePath) {
+        ui = new Ui();
         storage = new Storage(filePath);
         tasks = storage.readFromFile();
     }
@@ -27,7 +30,7 @@ public class Engine {
         try {
             switch (cmd) {
             case LIST:
-                return getListString();
+                return ui.getListString(tasks);
             case MARK:
                 int markIndex = Integer.parseInt(details) - 1;
                 return markTask(markIndex, true);
@@ -38,8 +41,8 @@ public class Engine {
                 int deleteIndex = Integer.parseInt(details) - 1;
                 return deleteTask(deleteIndex);
             case CLEAR:
-             clearTasks();
-                return "All tasks cleared!";
+                clearTasks();
+                return ui.getClearListMessage();
             case TODO:
             case DEADLINE:
             case EVENT:
@@ -61,7 +64,7 @@ public class Engine {
      * @return A string representation of all tasks.
      */
     public String getListString() {
-        return tasks.printList();
+        return ui.getListString(tasks);
     }
 
     /**
@@ -76,8 +79,7 @@ public class Engine {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
         task.status = isDone;
-        String status = isDone ? "marked as done" : "marked as not done";
-        return "Got it. I've " + status + ":\n  " + task;
+        return ui.getMarkMessage(isDone, task);
     }
 
     /**
@@ -91,7 +93,7 @@ public class Engine {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
         tasks.remove(index);
-        return "Noted. I've removed this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
+        return ui.getDeletedMessage(task);
     }
 
     /**
@@ -106,7 +108,7 @@ public class Engine {
     public String addTask(Command cmd, String details) throws InvalidActionException, MissingTaskException {
         Task newTask = Parser.parseTask(cmd, details);
         tasks.addTask(newTask);
-        return "Got it. I've added this task:\n  " + newTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+        return newTask.taskAddedMessage(tasks.size());
     }
 
     /**
@@ -117,14 +119,7 @@ public class Engine {
      */
     public String findTasks(String keyword) {
         TaskList temp = tasks.find(keyword);
-        if (temp.isEmpty()) {
-            return "No matching tasks found.";
-        }
-        StringBuilder result = new StringBuilder("Here are the matching tasks:\n");
-        for (int i = 0; i < temp.size(); i++) {
-            result.append((i + 1)).append(". ").append(temp.get(i)).append("\n");
-        }
-        return result.toString();
+        return ui.getListString(temp);
     }
 
     /**
