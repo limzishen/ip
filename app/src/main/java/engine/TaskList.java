@@ -97,7 +97,7 @@ public class TaskList {
     public TaskList find(String keyword) {
         TaskList temp = new TaskList();
         tasks.stream()
-                .filter(task -> task.taskName.contains(keyword))
+                .filter(task -> task.taskName.toLowerCase().contains(keyword.toLowerCase()))
                 .forEach(temp::addTask);
         return temp;
     }
