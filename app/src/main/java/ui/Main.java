@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import engine.Dicky;
+import engine.Engine;
 import engine.Parser;
 import engine.Command;
 import exception.InvalidActionException;
@@ -24,13 +24,18 @@ public class Main extends Application {
     private VBox dialogContainer;
     private TextField userInput;
     private Button sendButton;
-    private Dicky dicky;
+    private Engine engine;
 
+    /**
+     * Starts the JavaFX application.
+     *
+     * @param stage The primary stage for this application.
+     */
     @Override
     public void start(Stage stage) {
-        // Initialize Dicky chatbot
+        // Initialize engine chatbot
         String filePath = "src/data/data.txt";
-        dicky = new Dicky(filePath);
+        engine = new Engine(filePath);
 
         // Create the main layout
         VBox mainLayout = new VBox();
@@ -46,7 +51,7 @@ public class Main extends Application {
         scrollPane.setFitToWidth(true);
 
         // Add welcome message
-        addDialogItem("Dicky", "Hello! I'm Dicky. How can I help you today?", true);
+        addDialogItem("Dicky", "Hello! I'm dicky. How can I help you today?", true);
 
         // Create input area
         HBox inputLayout = new HBox();
@@ -72,7 +77,7 @@ public class Main extends Application {
 
         // Configure stage
         Scene scene = new Scene(mainLayout, 600, 700);
-        stage.setTitle("Dicky Chatbot");
+        stage.setTitle("engine Chatbot");
         stage.setScene(scene);
         stage.show();
 
@@ -80,6 +85,9 @@ public class Main extends Application {
         userInput.requestFocus();
     }
 
+    /**
+     * Handles the user input event (button click or enter key).
+     */
     private void handleUserInput() {
         String input = userInput.getText().trim();
         if (input.isEmpty()) {
@@ -96,21 +104,21 @@ public class Main extends Application {
 
             // Handle EXIT command
             if (cmd == Command.EXIT) {
-                addDialogItem("Dicky", "Goodbye! Your tasks have been saved.", true);
-                dicky.write(); // Save tasks before exit
+                addDialogItem("engine", "Goodbye! Your tasks have been saved.", true);
+                engine.write(); // Save tasks before exit
                 userInput.setDisable(true);
                 sendButton.setDisable(true);
                 return;
             }
 
             // Execute command and get response
-            String response = executeCommandAndGetResponse(cmd, details);
-            addDialogItem("Dicky", response, true);
+            String response = engine.executeCommandAndGetResponse(cmd, details);
+            addDialogItem("engine", response, true);
 
         } catch (InvalidActionException | MissingTaskException e) {
-            addDialogItem("Dicky", "Error: " + e.getMessage(), true);
+            addDialogItem("engine", "Error: " + e.getMessage(), true);
         } catch (Exception e) {
-            addDialogItem("Dicky", "An error occurred: " + e.getMessage(), true);
+            addDialogItem("engine", "An error occurred: " + e.getMessage(), true);
         }
 
         // Clear input
@@ -121,38 +129,13 @@ public class Main extends Application {
         scrollPane.setVvalue(1.0);
     }
 
-    private String executeCommandAndGetResponse(Command cmd, String details) throws InvalidActionException, MissingTaskException {
-        try {
-            switch (cmd) {
-            case LIST:
-                return dicky.getListString();
-            case MARK:
-                int markIndex = Integer.parseInt(details) - 1;
-                return dicky.markTask(markIndex, true);
-            case UNMARK:
-                int unmarkIndex = Integer.parseInt(details) - 1;
-                return dicky.markTask(unmarkIndex, false);
-            case DELETE:
-                int deleteIndex = Integer.parseInt(details) - 1;
-                return dicky.deleteTask(deleteIndex);
-            case CLEAR:
-                dicky.clearTasks();
-                return "All tasks cleared!";
-            case TODO:
-            case DEADLINE:
-            case EVENT:
-                return dicky.addTask(cmd, details);
-            case FIND:
-                return dicky.findTasks(details);
-            case UNKNOWN:
-            default:
-                throw new InvalidActionException("I don't understand that command. Try 'list', 'todo', 'deadline', 'event', 'mark', 'unmark', 'delete', 'find', 'clear', or 'exit'.");
-            }
-        } catch (NumberFormatException e) {
-            throw new InvalidActionException("Invalid task number format.");
-        }
-    }
-
+    /**
+     * Adds a dialog item (message) to the dialog container.
+     *
+     * @param sender       The name of the sender (e.g., "You" or "Dicky").
+     * @param message      The message content.
+     * @param isBotMessage True if the message is from the bot, false otherwise.
+     */
     private void addDialogItem(String sender, String message, boolean isBotMessage) {
         VBox messageBox = new VBox();
         messageBox.setStyle(isBotMessage ? "-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-background-color: #f5f5f5;" : 
@@ -173,6 +156,11 @@ public class Main extends Application {
         dialogContainer.getChildren().add(messageBox);
     }
 
+    /**
+     * The main entry point for the JavaFX application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

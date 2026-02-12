@@ -20,10 +20,12 @@ public class Ui {
     }
 
     /**
-     * Displays the welcome message to the user.
+     * Returns the welcome message to the user.
+     *
+     * @return The welcome message string.
      */
-    public void showWelcome() {
-        System.out.println(LINE + "\nHello I'm Dicky.\n" + LINE);
+    public String getWelcome() {
+        return LINE + "\nHello I'm Dicky.\n" + LINE;
     }
 
     /**
@@ -36,67 +38,87 @@ public class Ui {
     }
 
     /**
-     * Prints a horizontal line separator to the console.
+     * Returns a horizontal line separator.
+     *
+     * @return A string representing a horizontal line.
      */
-    public void showLine() {
-        System.out.println(LINE);
+    public String getLine() {
+        return LINE;
     }
 
     /**
-     * Displays an error message to the user.
+     * Returns a formatted error message.
      *
      * @param message The error message to be displayed.
+     * @return The formatted error string.
      */
-    public void showError(String message) {
-        System.out.println("Error: " + message);
+    public String getError(String message) {
+        return "Error: " + message;
     }
 
     /**
-     * Displays a general message to the user.
+     * Returns a general message to the user.
      *
      * @param message The message to be displayed.
+     * @return The message string.
      */
-    public void showMessage(String message) {
-        System.out.println(message);
+    public String getMessage(String message) {
+        return message;
     }
 
     /**
-     * Displays a message confirming that a task's status has been updated.
+     * Returns a message confirming that a task's status has been updated.
      *
      * @param isDone The new status of the task (true if done, false otherwise).
      * @param task   The task that was updated.
+     * @return The formatted status update message.
      */
-    public void markMessage(Boolean isDone, Task task) {
+    public String getMarkMessage(Boolean isDone, Task task) {
+        StringBuilder sb = new StringBuilder();
         if (isDone) {
-            System.out.println("Nice! I've marked this task as done:");
+            sb.append("Nice! I've marked this task as done:\n");
         } else {
-            System.out.println("OK, I've marked this task as not done yet:"); 
+            sb.append("OK, I've marked this task as not done yet:\n"); 
         }
-        System.out.println(task.toString() + "\n");
+        sb.append(task.toString()).append("\n");
+        return sb.toString();
     }
 
     /**
-     * Displays a message confirming that the task list has been cleared.
+     * Returns a message confirming that the task list has been cleared.
+     *
+     * @return The list cleared message.
      */
-    public void clearList() {
-        System.out.println("List Cleared");
-    }
-
-    public void showDeletedMessage(Task task) {
-        System.out.println("OK, I've deleted this task:");
-        System.out.println(task.toString() + "\n");
+    public String getClearListMessage() {
+        return "List Cleared";
     }
 
     /**
-     * Prints the formatted list of tasks to the console.
+     * Returns a message confirming the deletion of a task.
+     *
+     * @param task The task that was deleted.
+     * @return The formatted deletion message.
+     */
+    public String getDeletedMessage(Task task) {
+        return "OK, I've deleted this task:\n" + task.toString() + "\n";
+    }
+
+    /**
+     * Returns the formatted list of tasks.
      *
      * @param tasks The TaskList containing tasks to be printed.
+     * @return A string representation of the task list.
      */
-    public void printList(TaskList tasks) {
-        System.out.print(tasks.printList());
+    public String getListString(TaskList tasks) {
+        return tasks.printList();
     }
 
-    public void showExit() {
-        System.out.println("Bye. Hope to see you again soon!");
+    /**
+     * Returns the exit message.
+     *
+     * @return The exit message string.
+     */
+    public String getExitMessage() {
+        return "Bye. Hope to see you again soon!";
     }
 }
