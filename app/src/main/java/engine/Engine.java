@@ -73,6 +73,7 @@ public class Engine {
      * @throws IndexOutOfBoundsException If the index is invalid.
      */
     public String markTask(int index, boolean isDone) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
         task.status = isDone;
         String status = isDone ? "marked as done" : "marked as not done";
@@ -87,6 +88,7 @@ public class Engine {
      * @throws IndexOutOfBoundsException If the index is invalid.
      */
     public String deleteTask(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
         tasks.remove(index);
         return "Noted. I've removed this task:\n  " + task + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -136,6 +138,7 @@ public class Engine {
      * Saves all tasks to the storage file.
      */
     public void write() {
+        assert filePath != null : "File path should not be null";
         storage.writeFile(tasks);
     }
 
