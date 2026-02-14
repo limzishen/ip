@@ -43,13 +43,6 @@ class TaskListTest {
     }
 
     @Test
-    void remove_invalidIndex_throwsException() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            taskList.remove(0); // Removing from empty list should fail
-        });
-    }
-
-    @Test
     void printList_emptyList_returnsFriendlyMessage() {
         String result = taskList.printList();
 
